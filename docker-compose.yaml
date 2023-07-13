@@ -13,4 +13,4 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-    command: train # keep the container running - `standby` defined in entry_point.sh
+    command: standby # keep the container running - `standby` defined in entry_point.sh

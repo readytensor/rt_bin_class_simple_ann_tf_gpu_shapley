@@ -1,17 +1,10 @@
-# use an NVIDIA CUDA base image
-FROM nvidia/cuda:11.5.2-runtime-ubuntu20.04 as builder
-# FROM nvidia/cuda:12.2.0-runtime-ubuntu20.04 as builder
+# use an tensorflow-gpu base image
+FROM tensorflow/tensorflow:2.13.0-gpu as builder
 # Install OS dependencies
 RUN apt-get -y update && apt-get install -y --no-install-recommends \
          ca-certificates \
          dos2unix \
     && rm -rf /var/lib/apt/lists/*
-# install python and pip and add symbolic link to python3
-RUN apt-get -y update && apt-get install -y --no-install-recommends \
-         python3.9 \
-         python3-pip \
-    && rm -rf /var/lib/apt/lists/* \
-    && ln -s /usr/bin/python3 /usr/bin/python
 # copy requirements file and and install
 COPY ./requirements/requirements.txt /opt/
 RUN pip3 install --no-cache-dir -r /opt/requirements.txt
