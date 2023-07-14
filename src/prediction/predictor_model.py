@@ -1,6 +1,6 @@
 import os
 import warnings
-from typing import Optional, Dict, Callable
+from typing import Callable, Dict, Optional
 
 import joblib
 import numpy as np
@@ -29,16 +29,19 @@ COST_THRESHOLD = float("inf")
 logger = get_logger(task_name="tf_model_training")
 
 # Check TensorFlow Version
-logger.info(f"TensorFlow Version: {tf.__version__}" )
+logger.info(f"TensorFlow Version: {tf.__version__}")
 
 # Check for GPU availability
-gpu_avai = f"GPU available (YES)" \
-            if tf.config.list_physical_devices("GPU") \
-                else "GPU not available"
+gpu_avai = (
+    "GPU available (YES)"
+    if tf.config.list_physical_devices("GPU")
+    else "GPU not available"
+)
+
 logger.info(gpu_avai)
 
 
-def create_logger(log_period: int, log_type: str = 'epoch') -> Callable:
+def create_logger(log_period: int, log_type: str = "epoch") -> Callable:
     """
     Create a logging function to log information every log_period epochs or batches.
 
@@ -63,7 +66,7 @@ def create_logger(log_period: int, log_type: str = 'epoch') -> Callable:
 
     def log_function(log_count: int, logs: Dict) -> None:
         logs_str = ""
-        for k,v in logs.items():
+        for k, v in logs.items():
             logs_str += f"{k}: {np.round(v, 4)}  "
         if log_count % log_period == 0:
             logger.info(f"{log_type.capitalize()}: {log_count}, Metrics: {logs_str}")
@@ -85,13 +88,13 @@ class Classifier:
     model_name = "simple_ANN_tensorflow_binary_classifier"
 
     def __init__(
-            self,
-            D: Optional[int] = None,
-            l1_reg: Optional[float] = 1e-3,
-            l2_reg: Optional[float] = 1e-1,
-            lr: Optional[float] = 1e-3,
-            **kwargs,
-        ):
+        self,
+        D: Optional[int] = None,
+        l1_reg: Optional[float] = 1e-3,
+        l2_reg: Optional[float] = 1e-1,
+        lr: Optional[float] = 1e-3,
+        **kwargs,
+    ):
         """Construct a new binary classifier.
 
         Args:
@@ -108,7 +111,7 @@ class Classifier:
         self.l1_reg = np.float(l1_reg)
         self.l2_reg = np.float(l2_reg)
         self.lr = lr
-        self._log_period=10 # logging per 10 epochs
+        self._log_period = 10  # logging per 10 epochs
         # defer building model until fit because we need to know
         # dimensionality of data (D) to define the size of
         # input layer
@@ -168,8 +171,8 @@ class Classifier:
         )
         infcost_stop_callback = InfCostStopCallback()
         logger_callback = LambdaCallback(
-            on_epoch_end=create_logger(self._log_period, 'epoch'))
-
+            on_epoch_end=create_logger(self._log_period, "epoch")
+        )
 
         self.model.fit(
             x=train_inputs,
@@ -196,14 +199,14 @@ class Classifier:
             numpy.ndarray: The predicted class 1 probabilities.
         """
         # calculate the total number of batches
-        num_batches = int(np.ceil(inputs.shape[0] / batch_size))  
+        num_batches = int(np.ceil(inputs.shape[0] / batch_size))
         predictions = []
-        
+
         for i in range(num_batches):
-            batch_input = inputs[i * batch_size:(i + 1) * batch_size]
+            batch_input = inputs[i * batch_size : (i + 1) * batch_size]
             batch_predictions = self.model.predict(batch_input)
             predictions.append(batch_predictions)
-            logger.info( f"Predictions batch {i} completed.")
+            logger.info(f"Predictions batch {i} completed.")
         predictions = np.concatenate(predictions)
         logger.info(
             "All batch predictions complete. "
