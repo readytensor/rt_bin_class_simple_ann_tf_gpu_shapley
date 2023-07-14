@@ -10,7 +10,7 @@ The following are the requirements for using your data with this model:
 ---
 Here are the highlights of this implementation: <br/>
 - A flexible preprocessing pipeline built using **SciKit-Learn** and **feature-engine**. Transformations include missing value imputation, categorical encoding, outlier removal, feature selection, and feature scaling. <br/>
-- **`prediction/`**: Scripts for the Artificial Neural Network (ANN) classifier model implemented using TensorFlow.
+- A **Artificial Neural Network (ANN)** classifier built using **TensorFlow**. The model runs on GPU.
 - Hyperparameter-tuning using **scikit-optimize**
 - SHAP explainer using the **shap** package
 - **FASTAPI** inference service for online inferences.
